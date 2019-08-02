@@ -1,0 +1,141 @@
+function parse-sysmon($evtx_file)
+{ 
+
+    #EVTX File location
+    #$evtx_file=""
+
+    #Converting TO XML
+    $xml = [xml]((wevtutil query-events "$evtx_file" /logfile /element:root) -replace "\x01","" -replace "\x0f","" -replace "\x02","")
+
+    #Create Array to hold objects
+    [System.Collections.ArrayList]$ParsedEventArray = @()
+
+    #Loop to parase each event, painfully slow, coffee time :)
+    foreach ($e in $xml.root.event) 
+        { 
+
+        #Create Object
+        [hashtable]$objectProperty= @{}
+
+
+        #Locate and add Sysmon Properties To object
+        $cmdline = $e.EventData.Data | ?{ $_.Name -eq "ParentCommandLine"} |  select -Property "#text"
+        $objectProperty.Add('Parent Command Line',$cmdline."#text")
+
+        $utcTime = $e.EventData.Data | ?{ $_.Name -eq "UtcTime"} |  select -Property "#text"
+        $objectProperty.Add('UTC Time',$utcTime."#text")
+
+        $ProcessGUID=$e.EventData.Data | ?{ $_.Name -eq "ProcessGUID"} |  select -Property "#text"
+        $objectProperty.Add('ProcessGUID',$ProcessGUID."#text")
+
+        $RuleName = $e.EventData.Data | ?{ $_.Name -eq "RuleName"} |  select -Property "#text"
+        $objectProperty.Add('Rule Name',$RuleName."#text")
+
+        $ProcessId = $e.EventData.Data | ?{ $_.Name -eq "ProcessId"} |  select -Property "#text"
+        $objectProperty.Add('ProcessId',$ProcessId."#text")
+
+        $Image = $e.EventData.Data | ?{ $_.Name -eq "Image"} |  select -Property "#text"
+        $objectProperty.Add('Image',$Image."#text")
+
+        $FileVersion = $e.EventData.Data | ?{ $_.Name -eq "FileVersion"} |  select -Property "#text"
+        $objectProperty.Add('FileVersion',$FileVersion."#text")
+
+        $Description = $e.EventData.Data | ?{ $_.Name -eq "Description"} |  select -Property "#text"
+        $objectProperty.Add('Description',$Description."#text")
+
+        $Product = $e.EventData.Data | ?{ $_.Name -eq "Product"} |  select -Property "#text"
+        $objectProperty.Add('Product',$Product."#text")
+
+        $Company = $e.EventData.Data | ?{ $_.Name -eq "Company"} |  select -Property "#text"
+        $objectProperty.Add('Company',$Company."#text")
+
+        $CommandLine = $e.EventData.Data | ?{ $_.Name -eq "CommandLine"} |  select -Property "#text"
+        $objectProperty.Add('CommandLine',$CommandLine."#text")
+
+        $CurrentDirectory = $e.EventData.Data | ?{ $_.Name -eq "CurrentDirectory"} |  select -Property "#text"
+        $objectProperty.Add('CurrentDirectory',$CurrentDirectory."#text")
+
+        $User = $e.EventData.Data | ?{ $_.Name -eq "User"} |  select -Property "#text"
+        $objectProperty.Add('User',$User."#text")
+
+        $LogonGuid = $e.EventData.Data | ?{ $_.Name -eq "LogonGuid"} |  select -Property "#text"
+        $objectProperty.Add('LogonGuid',$LogonGuid."#text")
+
+        $LogonId = $e.EventData.Data | ?{ $_.Name -eq "LogonId"} |  select -Property "#text"
+        $objectProperty.Add('LogonId',$LogonId."#text")
+
+        $TerminalSessionId = $e.EventData.Data | ?{ $_.Name -eq "TerminalSessionId"} |  select -Property "#text"
+        $objectProperty.Add('TerminalSessionId',$TerminalSessionId."#text")
+
+        $IntegrityLevel = $xml.root.event.EventData.Data | ?{ $_.Name -eq "IntegrityLevel"} |  select -Property "#text"
+        $objectProperty.Add('IntegrityLevel',$IntegrityLevel."#text")
+
+        $Hashes = $e.EventData.Data | ?{ $_.Name -eq "Hashes"} |  select -Property "#text"
+        $objectProperty.Add('Hashes',$Hashes."#text")
+
+        $ParentProcessId = $e.EventData.Data | ?{ $_.Name -eq "ParentProcessId"} |  select -Property "#text"
+        $objectProperty.Add('ParentProcessId',$ParentProcessId."#text")
+
+        $ParentImage = $e.EventData.Data | ?{ $_.Name -eq "ParentImage"} |  select -Property "#text"
+        $objectProperty.Add('ParentImage',$ParentImage."#text")
+
+        $State = $e.EventData.Data | ?{ $_.Name -eq "State"} |  select -Property "#text"
+        $objectProperty.Add('State',$State."#text")
+
+        $Version = $e.EventData.Data | ?{ $_.Name -eq "Version"} |  select -Property "#text"
+        $objectProperty.Add('Version',$Version."#text")
+
+        $SchemaVersion = $e.EventData.Data | ?{ $_.Name -eq "SchemaVersion"} |  select -Property "#text"
+        $objectProperty.Add('SchemaVersion',$SchemaVersion."#text")
+
+        $ImageLoaded = $e.EventData.Data | ?{ $_.Name -eq "ImageLoaded"} |  select -Property "#text"
+        $objectProperty.Add('ImageLoaded',$ImageLoaded."#text")
+
+        $Signed = $e.EventData.Data | ?{ $_.Name -eq "Signed"} |  select -Property "#text"
+        $objectProperty.Add('Signed',$Signed."#text")
+
+        $Signature = $e.EventData.Data | ?{ $_.Name -eq "Signature"} |  select -Property "#text"
+        $objectProperty.Add('Signature',$Signature."#text")
+
+        $SignatureStatus = $e.EventData.Data | ?{ $_.Name -eq "SignatureStatus"} |  select -Property "#text"
+        $objectProperty.Add('SignatureStatus',$SignatureStatus."#text")
+
+        $Protocol = $e.EventData.Data | ?{ $_.Name -eq "Protocol"} |  select -Property "#text"
+        $objectProperty.Add('Protocol',$Protocol."#text")
+
+        $Initiated = $e.EventData.Data | ?{ $_.Name -eq "Initiated"} |  select -Property "#text"
+        $objectProperty.Add('Initiated',$Initiated."#text")
+
+        $SourceIsIpv6 = $e.EventData.Data | ?{ $_.Name -eq "SourceIsIpv6"} |  select -Property "#text"
+        $objectProperty.Add('SourceIsIpv6',$SourceIsIpv6."#text")
+
+        $SourceIp = $e.EventData.Data | ?{ $_.Name -eq "SourceIp"} |  select -Property "#text"
+        $objectProperty.Add('SourceIp',$SourceIp."#text")
+
+        $SourceHostname = $e.EventData.Data | ?{ $_.Name -eq "SourceHostname"} |  select -Property "#text"
+        $objectProperty.Add('SourceHostname',$SourceHostname."#text")
+
+        $SourcePort = $e.EventData.Data | ?{ $_.Name -eq "SourcePort"} |  select -Property "#text"
+        $objectProperty.Add('SourcePort',$SourcePort."#text")
+
+        $DestinationPortName = $e.EventData.Data | ?{ $_.Name -eq "DestinationPortName"} |  select -Property "#text"
+        $objectProperty.Add('DestinationPortName',$DestinationPortName."#text")
+
+        $TargetFilename = $e.EventData.Data | ?{ $_.Name -eq "TargetFilename"} |  select -Property "#text"
+        $objectProperty.Add('TargetFilename',$TargetFilename."#text")
+
+        $CreationUtcTime = $e.EventData.Data | ?{ $_.Name -eq "CreationUtcTime"} |  select -Property "#text"
+        $objectProperty.Add('CreationUtcTime',$CreationUtcTime."#text")
+
+        $PreviousCreationUtcTime = $e.EventData.Data | ?{ $_.Name -eq "PreviousCreationUtcTime"} |  select -Property "#text"
+        $objectProperty.Add('PreviousCreationUtcTime',$PreviousCreationUtcTime."#text")
+
+        #Build event Object
+        $ourObject=New-Object -TypeName psobject -Property $objectProperty
+
+        #Add Object to our Array
+        $ParsedEventArray.Add($ourObject)
+     }
+
+ Return $ParsedEventArray
+} 
