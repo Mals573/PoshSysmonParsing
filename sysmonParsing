@@ -19,6 +19,25 @@ function parse-sysmon($evtx_file)
 
 
         #Locate and add Sysmon Properties To object
+
+        $TargetObject = $e.EventData.Data | ?{ $_.Name -eq "TargetObject"} |  select -Property "#text"
+        $objectProperty.Add('TargetObject',$TargetObject."#text")
+
+        $EventType = $e.EventData.Data | ?{ $_.Name -eq "EventType"} |  select -Property "#text"
+        $objectProperty.Add('EventType',$EventType."#text")
+
+        $QueryName = $e.EventData.Data | ?{ $_.Name -eq "QueryName"} |  select -Property "#text"
+        $objectProperty.Add('QueryName',$QueryName."#text")
+
+        $OrginalFileName = $e.EventData.Data | ?{ $_.Name -eq "OrginalFileName"} |  select -Property "#text"
+        $objectProperty.Add('OrginalFileName',$OrginalFileName."#text")
+
+        $RuleName = $e.EventData.Data | ?{ $_.Name -eq "RuleName"} |  select -Property "#text"
+        $objectProperty.Add('Rule Name',$RuleName."#text")
+
+        $Signed = $e.EventData.Data | ?{ $_.Name -eq "Signed"} |  select -Property "#text"
+        $objectProperty.Add('Signed',$Signed."#text")
+
         $cmdline = $e.EventData.Data | ?{ $_.Name -eq "ParentCommandLine"} |  select -Property "#text"
         $objectProperty.Add('Parent Command Line',$cmdline."#text")
 
@@ -112,8 +131,14 @@ function parse-sysmon($evtx_file)
         $SourceIp = $e.EventData.Data | ?{ $_.Name -eq "SourceIp"} |  select -Property "#text"
         $objectProperty.Add('SourceIp',$SourceIp."#text")
 
+        $DestinationIp = $e.EventData.Data | ?{ $_.Name -eq "DestinationIp"} |  select -Property "#text"
+        $objectProperty.Add('DestinationIp',$DestinationIp."#text")
+
         $SourceHostname = $e.EventData.Data | ?{ $_.Name -eq "SourceHostname"} |  select -Property "#text"
         $objectProperty.Add('SourceHostname',$SourceHostname."#text")
+
+        $DestinationHostname = $e.EventData.Data | ?{ $_.Name -eq "DestinationHostname"} |  select -Property "#text"
+        $objectProperty.Add('DestinationHostname',$DestinationHostname."#text")
 
         $SourcePort = $e.EventData.Data | ?{ $_.Name -eq "SourcePort"} |  select -Property "#text"
         $objectProperty.Add('SourcePort',$SourcePort."#text")
