@@ -32,9 +32,6 @@ function parse-sysmon($evtx_file)
         $OrginalFileName = $e.EventData.Data | ?{ $_.Name -eq "OrginalFileName"} |  select -Property "#text"
         $objectProperty.Add('OrginalFileName',$OrginalFileName."#text")
 
-        $RuleName = $e.EventData.Data | ?{ $_.Name -eq "RuleName"} |  select -Property "#text"
-        $objectProperty.Add('Rule Name',$RuleName."#text")
-
         $Signed = $e.EventData.Data | ?{ $_.Name -eq "Signed"} |  select -Property "#text"
         $objectProperty.Add('Signed',$Signed."#text")
 
@@ -109,9 +106,6 @@ function parse-sysmon($evtx_file)
 
         $ImageLoaded = $e.EventData.Data | ?{ $_.Name -eq "ImageLoaded"} |  select -Property "#text"
         $objectProperty.Add('ImageLoaded',$ImageLoaded."#text")
-
-        $Signed = $e.EventData.Data | ?{ $_.Name -eq "Signed"} |  select -Property "#text"
-        $objectProperty.Add('Signed',$Signed."#text")
 
         $Signature = $e.EventData.Data | ?{ $_.Name -eq "Signature"} |  select -Property "#text"
         $objectProperty.Add('Signature',$Signature."#text")
